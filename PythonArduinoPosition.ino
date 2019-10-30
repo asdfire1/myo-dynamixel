@@ -21,14 +21,11 @@
   #define REC_SERIAL Serial
   const uint8_t DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
 
-uint8_t DXL_ID = 4;
+const uint8_t DXL_ID = 4;
 const float DXL_PROTOCOL_VERSION = 2.0;
 
 int debLED = 13;
 String Str;
-int Opt = 0;
-int pos = 150;
-int pos3;
 
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
@@ -50,26 +47,17 @@ void setup() {
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);
   // Get DYNAMIXEL information
   dxl.ping(DXL_ID);
-  dxl.ping(3);
 
   // Turn off torque when configuring items in EEPROM area
   dxl.torqueOff(DXL_ID);
   dxl.setOperatingMode(DXL_ID, OP_POSITION);
   dxl.torqueOn(DXL_ID);
 
-  dxl.torqueOff(3);
-  dxl.setOperatingMode(3, OP_POSITION);
-  dxl.torqueOn(3);
-
-  pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
-  
-
 }
 
 
-
 void loop() {
-
+Str="0";
   /*
   digitalWrite(debLED, HIGH);
 
@@ -80,71 +68,39 @@ void loop() {
  }
  */
  
-/*
-dxl.setGoalPosition(DXL_ID, 130, UNIT_DEGREE);
-      delay(1500);
-dxl.setGoalPosition(DXL_ID, 100, UNIT_DEGREE);
-      delay(1500);
-*/
-switch(Opt)
-{
-  case 1:
-    digitalWrite(debLED, HIGH);
-    if(DXL_ID==4){
-      DXL_ID=3;
-      pos = dxl.getPresentPosition(3, UNIT_DEGREE);
-    }
-    else{
-      DXL_ID=4;
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
-    }
-    Opt = 0;
-    break;
-  case 2:
-    digitalWrite(debLED, HIGH);
-    pos=pos+1;
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
-    break;
-  case 3:
-    digitalWrite(debLED, HIGH);
-    pos=pos-1;
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
-    break;
-  default:
-    digitalWrite(debLED, LOW);
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
-}
-
-if(REC_SERIAL.available()>0){
- delay(10);
- Str = REC_SERIAL.readStringUntil('x');
- Serial2.print(Str);
-  
- if(Str=="fist"){
-      digitalWrite(debLED, HIGH);
-      Opt = 1;
+//dxl.setGoalPosition(DXL_ID, 130, UNIT_DEGREE);
+      //delay(1500);
+//dxl.setGoalPosition(DXL_ID, 100, UNIT_DEGREE);
+      //delay(1500);
+ 
+  if(REC_SERIAL.available()>0){
+    delay(100);
+    Str = REC_SERIAL.readStringUntil('x');
+   // Serial2.println("String: ");Serial2.print( Str);
+    if(Str=="fist"){
+      digitalWrite(debLED, LOW);
+      Serial2.println("fist");
+      delay(500);
     }
     else if(Str=="in"){
-      digitalWrite(debLED, HIGH);
-      Opt = 2;
+      Serial2.println("in");
+      dxl.setGoalPosition(DXL_ID, 130, UNIT_DEGREE);
+      
+      //delay(1500);
     }
     else if(Str=="out"){
-      digitalWrite(debLED, HIGH);
-      Opt = 3;
-      
+      Serial2.println("out");
+      dxl.setGoalPosition(DXL_ID, 100, UNIT_DEGREE);
+      //delay(1500);
     }
     else{
-      digitalWrite(debLED, LOW);
-      Opt = 0;
+      digitalWrite(debLED, HIGH);
     }
-}
+  }
 
- delay(10);
-   
-
-  /*
+  
   //dxl.setGoalPosition(DXL_ID, 5.7, UNIT_DEGREE);
   //delay(1000);
   // Print present position in degree value
-  */
+  
 }
