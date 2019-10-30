@@ -28,7 +28,6 @@ int debLED = 13;
 String Str;
 int Opt = 0;
 int pos = 150;
-int pos3;
 
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
