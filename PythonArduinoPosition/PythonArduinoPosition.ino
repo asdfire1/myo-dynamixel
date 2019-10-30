@@ -69,24 +69,11 @@ void setup() {
 
 void loop() {
 
-  /*
-  digitalWrite(debLED, HIGH);
 
- if(REC_SERIAL.available()>0){
-  delay(50);
- Str = REC_SERIAL.readStringUntil('x');
- Serial2.print(Str);
- }
- */
- 
-/*
-dxl.setGoalPosition(DXL_ID, 130, UNIT_DEGREE);
-      delay(1500);
-dxl.setGoalPosition(DXL_ID, 100, UNIT_DEGREE);
-      delay(1500);
-*/
-switch(Opt)
-{
+
+  switch(Opt)
+    {
+  
   case 1:
     digitalWrite(debLED, HIGH);
     if(DXL_ID==4){
@@ -101,17 +88,29 @@ switch(Opt)
     break;
   case 2:
     digitalWrite(debLED, HIGH);
+    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos < 2){
     pos=pos+1;
+    }
+    else{
+      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+    }
     dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
     break;
   case 3:
     digitalWrite(debLED, HIGH);
+    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos > -2){
     pos=pos-1;
+    }
+    else{
+      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+    }
     dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
     break;
   default:
     digitalWrite(debLED, LOW);
     dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+ 
+  
 }
 
 if(REC_SERIAL.available()>0){
@@ -130,20 +129,12 @@ if(REC_SERIAL.available()>0){
     else if(Str=="out"){
       digitalWrite(debLED, HIGH);
       Opt = 3;
-      
     }
     else{
       digitalWrite(debLED, LOW);
       Opt = 0;
     }
-}
+  }
 
- delay(10);
-   
 
-  /*
-  //dxl.setGoalPosition(DXL_ID, 5.7, UNIT_DEGREE);
-  //delay(1000);
-  // Print present position in degree value
-  */
 }
