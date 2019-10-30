@@ -12,5 +12,6 @@ Add myo32.dll to the Python install folder.
   
   
 
-Myo-python source: https://github.com/NiklasRosenstein/myo-python
+Myo-python source: https://github.com/NiklasRosenstein/myo-python  
 Myo SDK: https://support.getmyo.com/hc/en-us/articles/360018409792
+Arduino2Dynamixel libary: https://github.com/ROBOTIS-GIT/Dynamixel2Arduino/blob/master/LICENSE  
