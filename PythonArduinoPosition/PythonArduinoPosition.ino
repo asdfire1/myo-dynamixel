@@ -52,24 +52,21 @@ void setup() {
   dxl.ping(3);
 
   // Turn off torque when configuring items in EEPROM area
-  dxl.torqueOff(DXL_ID);
-  dxl.setOperatingMode(DXL_ID, OP_POSITION);
-  dxl.torqueOn(DXL_ID);
+  //dxl.torqueOff(DXL_ID);
+  //dxl.setOperatingMode(DXL_ID, OP_POSITION);
+  //dxl.torqueOn(DXL_ID);
 
-  dxl.torqueOff(3);
-  dxl.setOperatingMode(3, OP_POSITION);
-  dxl.torqueOn(3);
-
-  pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
-  
-
+for(int i=1; i<=5; i++){
+  dxl.torqueOff(i);
+  dxl.setOperatingMode(i, OP_POSITION);
+  dxl.torqueOn(i);
 }
 
-
+  pos = dxl.getPresentPosition(DXL_ID);
+  
+}
 
 void loop() {
-
-
 
   switch(Opt)
     {
@@ -77,38 +74,50 @@ void loop() {
   case 1:
     digitalWrite(debLED, HIGH);
     if(DXL_ID==4){
-      DXL_ID=3;
-      pos = dxl.getPresentPosition(3, UNIT_DEGREE);
+      DXL_ID=1;
+      pos = dxl.getPresentPosition(DXL_ID);
     }
     else{
-      DXL_ID=4;
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      DXL_ID++;
+      pos = dxl.getPresentPosition(DXL_ID);
     }
     Opt = 0;
     break;
   case 2:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos < 2){
-    pos=pos+1;
+    if(dxl.getPresentPosition(DXL_ID)-pos < 5){
+    pos=pos+2;
     }
     else{
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      pos = dxl.getPresentPosition(DXL_ID);
     }
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
     break;
   case 3:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos > -2){
-    pos=pos-1;
+    if(dxl.getPresentPosition(DXL_ID)-pos > -5){
+    pos=pos-2;
     }
     else{
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      pos = dxl.getPresentPosition(DXL_ID);
     }
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
+    break;
+  case 4:
+    digitalWrite(debLED, HIGH);
+    if(DXL_ID==1){
+      DXL_ID=4;
+      pos = dxl.getPresentPosition(DXL_ID);
+    }
+    else{
+      DXL_ID--;
+      pos = dxl.getPresentPosition(DXL_ID);
+    }
+    Opt = 0;
     break;
   default:
     digitalWrite(debLED, LOW);
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
  
   
 }
@@ -129,6 +138,10 @@ if(REC_SERIAL.available()>0){
     else if(Str=="out"){
       digitalWrite(debLED, HIGH);
       Opt = 3;
+    }
+    else if(Str=="fingers"){
+      digitalWrite(debLED, HIGH);
+      Opt = 4;
     }
     else{
       digitalWrite(debLED, LOW);
