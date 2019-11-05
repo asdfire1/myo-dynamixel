@@ -1,21 +1,8 @@
-/*******************************************************************************
-* Copyright 2016 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
-
 #include <Dynamixel2Arduino.h>
+#include <Adafruit_NeoPixel.h>
 
+  #define LEDPIN 3
+  #define LEDNUM 24
 
   #define DXL_SERIAL Serial1
   #define REC_SERIAL Serial
@@ -28,7 +15,7 @@ int debLED = 13;
 String Str;
 int Opt = 0;
 int pos = 150;
-
+Adafruit_NeoPixel ledindicator(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800);
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
 void setup() {
@@ -63,9 +50,31 @@ for(int i=1; i<=5; i++){
 }
 
   pos = dxl.getPresentPosition(DXL_ID);
-  
+  ledindicator.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  ledindicator.setBrightness(5);
+  ledindicator.clear();
+  indicatorset();
 }
+void colorset(int a, int r, int g, int b){
+  for(int i=a; i<(a+6); i++) { // For each pixel...
 
+    ledindicator.setPixelColor(i, ledindicator.Color(r,g,b));
+  }
+}
+void indicatorset(){
+    ledindicator.clear();
+    colorset(0,255,0,0);
+    if (DXL_ID!=1){
+      colorset(6,0,255,0);
+    }
+    if(DXL_ID ==3 ||DXL_ID ==4){
+    colorset(12,0,0,255);
+    }
+    if(DXL_ID ==4){
+      colorset(18,255,255,255);
+    }
+    ledindicator.show();
+}
 void loop() {
 
   switch(Opt)
@@ -82,6 +91,7 @@ void loop() {
       pos = dxl.getPresentPosition(DXL_ID);
     }
     Opt = 0;
+    indicatorset();
     break;
   case 2:
     digitalWrite(debLED, HIGH);
@@ -114,6 +124,7 @@ void loop() {
       pos = dxl.getPresentPosition(DXL_ID);
     }
     Opt = 0;
+    indicatorset();
     break;
   default:
     digitalWrite(debLED, LOW);
