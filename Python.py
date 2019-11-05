@@ -24,6 +24,10 @@ class Listener(myo.DeviceListener):
         ser.write(b'fistx')
         print('fist')
         event.device.vibrate(myo.VibrationType.short)
+    elif event.pose == myo.Pose.fingers_spread:
+        ser.write(b'fingersx')
+        print('fingers')
+        event.device.vibrate(myo.VibrationType.short)
     elif event.pose == myo.Pose.wave_in:
         ser.write(b'inx')
         print('in')

@@ -1,21 +1,8 @@
-/*******************************************************************************
-* Copyright 2016 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
-
 #include <Dynamixel2Arduino.h>
+#include <Adafruit_NeoPixel.h>
 
+  #define LEDPIN 3
+  #define LEDNUM 24
 
   #define DXL_SERIAL Serial1
   #define REC_SERIAL Serial
@@ -28,7 +15,7 @@ int debLED = 13;
 String Str;
 int Opt = 0;
 int pos = 150;
-
+Adafruit_NeoPixel ledindicator(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800);
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
 void setup() {
@@ -52,24 +39,43 @@ void setup() {
   dxl.ping(3);
 
   // Turn off torque when configuring items in EEPROM area
-  dxl.torqueOff(DXL_ID);
-  dxl.setOperatingMode(DXL_ID, OP_POSITION);
-  dxl.torqueOn(DXL_ID);
+  //dxl.torqueOff(DXL_ID);
+  //dxl.setOperatingMode(DXL_ID, OP_POSITION);
+  //dxl.torqueOn(DXL_ID);
 
-  dxl.torqueOff(3);
-  dxl.setOperatingMode(3, OP_POSITION);
-  dxl.torqueOn(3);
-
-  pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
-  
-
+for(int i=1; i<=5; i++){
+  dxl.torqueOff(i);
+  dxl.setOperatingMode(i, OP_POSITION);
+  dxl.torqueOn(i);
 }
 
+  pos = dxl.getPresentPosition(DXL_ID);
+  ledindicator.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  ledindicator.setBrightness(5);
+  ledindicator.clear();
+  indicatorset();
+}
+void colorset(int a, int r, int g, int b){
+  for(int i=a; i<(a+6); i++) { // For each pixel...
 
-
+    ledindicator.setPixelColor(i, ledindicator.Color(r,g,b));
+  }
+}
+void indicatorset(){
+    ledindicator.clear();
+    colorset(0,255,0,0);
+    if (DXL_ID!=1){
+      colorset(6,0,255,0);
+    }
+    if(DXL_ID ==3 ||DXL_ID ==4){
+    colorset(12,0,0,255);
+    }
+    if(DXL_ID ==4){
+      colorset(18,255,255,255);
+    }
+    ledindicator.show();
+}
 void loop() {
-
-
 
   switch(Opt)
     {
@@ -77,38 +83,52 @@ void loop() {
   case 1:
     digitalWrite(debLED, HIGH);
     if(DXL_ID==4){
-      DXL_ID=3;
-      pos = dxl.getPresentPosition(3, UNIT_DEGREE);
+      DXL_ID=1;
+      pos = dxl.getPresentPosition(DXL_ID);
     }
     else{
-      DXL_ID=4;
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      DXL_ID++;
+      pos = dxl.getPresentPosition(DXL_ID);
     }
     Opt = 0;
+    indicatorset();
     break;
   case 2:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos < 2){
-    pos=pos+1;
+    if(dxl.getPresentPosition(DXL_ID)-pos < 5){
+    pos=pos+2;
     }
     else{
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      pos = dxl.getPresentPosition(DXL_ID);
     }
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
     break;
   case 3:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID, UNIT_DEGREE)-pos > -2){
-    pos=pos-1;
+    if(dxl.getPresentPosition(DXL_ID)-pos > -5){
+    pos=pos-2;
     }
     else{
-      pos = dxl.getPresentPosition(DXL_ID, UNIT_DEGREE);
+      pos = dxl.getPresentPosition(DXL_ID);
     }
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
+    break;
+  case 4:
+    digitalWrite(debLED, HIGH);
+    if(DXL_ID==1){
+      DXL_ID=4;
+      pos = dxl.getPresentPosition(DXL_ID);
+    }
+    else{
+      DXL_ID--;
+      pos = dxl.getPresentPosition(DXL_ID);
+    }
+    Opt = 0;
+    indicatorset();
     break;
   default:
     digitalWrite(debLED, LOW);
-    dxl.setGoalPosition(DXL_ID, pos, UNIT_DEGREE);
+    dxl.setGoalPosition(DXL_ID, pos);
  
   
 }
@@ -129,6 +149,10 @@ if(REC_SERIAL.available()>0){
     else if(Str=="out"){
       digitalWrite(debLED, HIGH);
       Opt = 3;
+    }
+    else if(Str=="fingers"){
+      digitalWrite(debLED, HIGH);
+      Opt = 4;
     }
     else{
       digitalWrite(debLED, LOW);
