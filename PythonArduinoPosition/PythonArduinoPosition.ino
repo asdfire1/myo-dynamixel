@@ -126,11 +126,11 @@ if(REC_SERIAL.available()>0){
       digitalWrite(debLED, HIGH);
       Opt = 1;
     }
-    else if(Str=="in"){
+    else if(Str=="in"|| Str=="Sin"){
       digitalWrite(debLED, HIGH);
       Opt = 2;
     }
-    else if(Str=="out"){
+    else if(Str=="out" || Str=="Sout"){
       digitalWrite(debLED, HIGH);
       Opt = 3;
     }
@@ -138,7 +138,7 @@ if(REC_SERIAL.available()>0){
       digitalWrite(debLED, HIGH);
       Opt = 4;
     }
-    else{
+    else if(Str=="rest"){
       digitalWrite(debLED, LOW);
       Opt = 0;
     }
