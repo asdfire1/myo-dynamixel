@@ -36,7 +36,7 @@ class EmgCollector(myo.DeviceListener):
   def __init__(self, n):
     self.n = n
     self.lock = Lock()
-    self.emg_data_queue = deque(maxlen=n)
+    self.emg_data_queue = deque(maxlen=8)
 
   def get_emg_data(self):
     with self.lock:
@@ -66,6 +66,7 @@ class Plot(object):
   def update_plot(self):
     emg_data = self.listener.get_emg_data()
     emg_data = np.array([x[1] for x in emg_data]).T
+    print(emg_data)
     emg_data = map(abs, emg_data)
     for g, data in zip(self.graphs, emg_data):
       if len(data) < self.n:
