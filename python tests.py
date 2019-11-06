@@ -36,22 +36,23 @@ class EmgCollector(myo.DeviceListener):
   def __init__(self):
     print("__init__")
     self.lock = Lock()
-    self.emg_data_queue = deque(maxlen=10)
-    print
+    self.emg_data_queue = deque(maxlen=50)
 
   def get_emg_data(self):
+    #print("getemgdata")
     with self.lock:
       return list(self.emg_data_queue)
 
   # myo.DeviceListener
 
   def on_connected(self, event):
+    print("connected")
     event.device.stream_emg(True)
 
   def on_emg(self, event):
+    #print("onemg")
     with self.lock:
       self.emg_data_queue.append((event.timestamp, event.emg))
-      print("Test" + emg_data_queue)
 
 
 
@@ -65,12 +66,16 @@ class readingtest(object):
   def __init__(self, listener):
     self.listener = listener
   def main(self):
+    time.sleep(2)
     while True:
         time.sleep(0.1)
         emg_data = self.listener.get_emg_data()
+        #print(emg_data)
         emg_data = np.array([x[1] for x in emg_data]).T
-        #emg_data = map(abs, emg_data)
-        print(emg_data)
+        emg_data = np.absolute(emg_data)
+        emg_data = np.average(emg_data)
+        print(int(emg_data))
+        time.sleep(0.00001)
 
 
 def main():
@@ -78,7 +83,7 @@ def main():
   myo.init()
   hub = myo.Hub()
   listener = EmgCollector()
-  time.sleep(1)
+  time.sleep(2)
   with hub.run_in_background(listener.on_event):
       readingtest(listener).main()
       
