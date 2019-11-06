@@ -1,119 +1,90 @@
-# Copyright (C) 2015  Niklas Rosenstein, MIT License
-# Last modified by Yi Jui Lee (August 15 2015)
+# The MIT License (MIT)
+#
+# Copyright (c) 2017 Niklas Rosenstein
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
 
-from __future__ import division
-import sys
-from sys import exit
-import myo
-from myo.lowlevel import pose_t, stream_emg
-from myo.six import print_
-import random
+from matplotlib import pyplot as plt
+from collections import deque
+from threading import Lock, Thread
 import time
-
-open('Emg', 'w').close()
-
-temp = []
-with open('PythonVars.txt') as f:
-    for val in f:
-        temp.append(int(val))
-
-samplerate = temp[0]
-t_s = 1/samplerate
-print "\n\nSample rate is adjusted to %.0f Hz" % (samplerate)
-print "Collecting emg data every %.3f seconds" % (t_s)
-
-T = temp[1]
-print "\n\nThis program will terminate in %.1f seconds\n" %(T)                    
-
-myo.init()
-r"""
-There can be a lot of output from certain data like acceleration and orientation.
-This parameter controls the percent of times that data is shown.
-"""
+import myo
+import numpy as np
 
 
-class Listener(myo.DeviceListener):
-    # return False from any method to stop the Hub
+class EmgCollector(myo.DeviceListener):
+  """
+  Collects EMG data in a queue with *n* maximum number of elements.
+  """
 
-    def on_connect(self, myo, timestamp):
-		print_("Connected to Myo")
-		myo.vibrate('short')
-                myo.set_stream_emg(stream_emg.enabled)
-		myo.request_rssi()
-		global start
-		start = time.time()
-			
-    def on_rssi(self, myo, timestamp, rssi):
-		print_("RSSI:", rssi)
+  def __init__(self):
+    print("__init__")
+    self.lock = Lock()
+    self.emg_data_queue = deque(maxlen=10)
+    print
 
-    def on_event(self, event):
-        r""" Called before any of the event callbacks. """
+  def get_emg_data(self):
+    with self.lock:
+      return list(self.emg_data_queue)
 
-    def on_event_finished(self, event):
-        r""" Called after the respective event callbacks have been
-        invoked. This method is *always* triggered, even if one of
-        the callbacks requested the stop of the Hub. """
+  # myo.DeviceListener
 
-    def on_pair(self, myo, timestamp):
-        print_('Paired')
-        print_("If you don't see any responses to your movements, try re-running the program or making sure the Myo works with Myo Connect (from Thalmic Labs).")
-        print_("Double tap enables EMG.")
-        print_("Spreading fingers disables EMG.\n")
+  def on_connected(self, event):
+    event.device.stream_emg(True)
 
-    def on_disconnect(self, myo, timestamp):
-        print_('on_disconnect')
-                    
-    def on_emg(self, myo, timestamp, emg):
-	r = 'Emg.txt'
-	global start
-	global t2
-	global t_s
-	current = time.time()
-        tdiff = current - start
-        t2 = timestamp
-        if 't1' not in globals():
-            global t1
-            t1 = timestamp
-        if tdiff > t_s:
-            start = time.time()
-            show_output('emg', emg, r)
+  def on_emg(self, event):
+    with self.lock:
+      self.emg_data_queue.append((event.timestamp, event.emg))
+      print("Test" + emg_data_queue)
 
-    def on_unlock(self, myo, timestamp):
-        print_('unlocked')
 
-    def on_lock(self, myo, timestamp):
-        print_('locked')
 
-    def on_sync(self, myo, timestamp):
-        print_('synced')
+    
 
-    def on_unsync(self, myo, timestamp):
-        print_('unsynced')
-        
-def show_output(message, data, r):
-	global t2
-	global t1
-	global T
-	if t2 - t1 < (T*1000000): 
-		with open(r, "a") as text_file:
-			text_file.write("{0}\n".format(data))
-	else:  
-		exit()
-		
+    #emg_data = self.listener.get_emg_data()
+    #emg_data = np.array([x[1] for x in emg_data]).T
+    #emg_data = map(abs, emg_data)
+
+class readingtest(object):
+  def __init__(self, listener):
+    self.listener = listener
+  def main(self):
+    while True:
+        time.sleep(0.1)
+        emg_data = self.listener.get_emg_data()
+        emg_data = np.array([x[1] for x in emg_data]).T
+        #emg_data = map(abs, emg_data)
+        print(emg_data)
+
+
 def main():
-    hub = myo.Hub()
-    hub.set_locking_policy(myo.locking_policy.none)
-    hub.run(1000, Listener())
+  print("Main starts")
+  myo.init()
+  hub = myo.Hub()
+  listener = EmgCollector()
+  time.sleep(1)
+  with hub.run_in_background(listener.on_event):
+      readingtest(listener).main()
+      
+   
 
-    # Listen to keyboard interrupts and stop the
-    # hub in that case.
-    try:
-        while hub.running:
-            myo.time.sleep(0.2)
-    except KeyboardInterrupt:
-        print_("Quitting ...")
-        hub.stop(True)
+
 
 if __name__ == '__main__':
-    main()
-
+  main()
