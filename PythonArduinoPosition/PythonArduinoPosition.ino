@@ -84,7 +84,7 @@ void loop() {
     digitalWrite(debLED, HIGH);
     if(dxl.getPresentPosition(DXL_ID)-pos < 8){
       if (DXL_ID==4)
-      pos=pos+2*musclestr+2;
+      pos=pos+3*musclestr;
       if (DXL_ID==3)
       pos=pos+2*musclestr;
       if (DXL_ID==2)
@@ -107,7 +107,7 @@ void loop() {
     digitalWrite(debLED, HIGH);
     if(dxl.getPresentPosition(DXL_ID)-pos > -8){
       if (DXL_ID==4)
-      pos=pos-2*musclestr-2;
+      pos=pos-3*musclestr;
       if (DXL_ID==3)
       pos=pos-2*musclestr;
       if (DXL_ID==2)
