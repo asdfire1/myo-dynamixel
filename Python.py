@@ -7,7 +7,7 @@ import numpy as np
 from collections import deque
 from threading import Lock, Thread
 
-ser = serial.Serial("COM5", 57600)
+ser = serial.Serial("COM10", 57600)
 posevariable='restx'
 ser.write(b'initx')
 
@@ -15,7 +15,7 @@ class Listener(myo.DeviceListener):
   def __init__(self):
     print("__init__")
     self.lock = Lock()
-    self.emg_data_queue = deque(maxlen=50) #this can be changed to make the strength change slower and be more stable
+    self.emg_data_queue = deque(maxlen=80) #this can be changed to make the strength change slower and be more stable
 
   def on_connected(self, event):
     print("Hello, '{}'! Double tap to exit.".format(event.device_name))
@@ -90,7 +90,7 @@ if __name__ == '__main__':
   while hub.run(listener.on_event, 100):
     
     strraw=readingtest(listener).main()
-    if strraw > 10: #this should be tuned (to individual person?)(or to inx and outx)
+    if strraw > 18: #this should be tuned (to individual person?)(or to inx and outx)
       stren = 1
     else:
       stren = 0
