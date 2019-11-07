@@ -23,9 +23,10 @@
 from matplotlib import pyplot as plt
 from collections import deque
 from threading import Lock, Thread
+import numpy as np
 import time
 import myo
-import numpy as np
+
 
 
 class EmgCollector(myo.DeviceListener):
