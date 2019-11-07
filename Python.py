@@ -15,7 +15,7 @@ class Listener(myo.DeviceListener):
   def __init__(self):
     print("__init__")
     self.lock = Lock()
-    self.emg_data_queue = deque(maxlen=50)
+    self.emg_data_queue = deque(maxlen=50) #this can be changed to make the strength change slower and be more stable
 
   def on_connected(self, event):
     print("Hello, '{}'! Double tap to exit.".format(event.device_name))
@@ -87,10 +87,10 @@ if __name__ == '__main__':
   listener = Listener()
   pastpose='restx'
   paststren='0'
-  while hub.run(listener.on_event, 250):
+  while hub.run(listener.on_event, 100):
     
     strraw=readingtest(listener).main()
-    if strraw > 10:
+    if strraw > 10: #this should be tuned (to individual person?)(or to inx and outx)
       stren = 1
     else:
       stren = 0
