@@ -82,7 +82,7 @@ void loop() {
     break;
   case 2:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID)-pos < 8){
+    if(dxl.getPresentPosition(DXL_ID)-pos < 24){
       if (DXL_ID==4)
       pos=pos+2*musclestr+2;
       if (DXL_ID==3)
@@ -105,7 +105,7 @@ void loop() {
     break;
   case 3:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID)-pos > -8){
+    if(dxl.getPresentPosition(DXL_ID)-pos > -24){
       if (DXL_ID==4)
       pos=pos-2*musclestr-2;
       if (DXL_ID==3)
@@ -178,6 +178,10 @@ if(REC_SERIAL.available()>0){
     else if(Str=="rest"){
       digitalWrite(debLED, LOW);
       Opt = 0;
+      if(DXL_ID!=4){
+      pos = dxl.getPresentPosition(DXL_ID);
+      dxl.setGoalPosition(DXL_ID, pos);
+      }
     }
   }
 
