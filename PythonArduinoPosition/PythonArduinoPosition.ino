@@ -14,6 +14,7 @@
   int debLED = 13;
   int Opt = 0;
   int pos = 150;
+  int musclestr = 1;
   Adafruit_NeoPixel ledindicator(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800); //Creating object for LEDs
   Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN); //Creating object for dynamixel communication
 
@@ -81,8 +82,21 @@ void loop() {
     break;
   case 2:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID)-pos < 5){
-    pos=pos+2;
+    if(dxl.getPresentPosition(DXL_ID)-pos < 24){
+      if (DXL_ID==4)
+      pos=pos+2*musclestr+2;
+      if (DXL_ID==3)
+      pos=pos+2*musclestr;
+      if (DXL_ID==2)
+      pos=pos+musclestr;
+      if (DXL_ID==1){
+        if(musclestr==1)
+        pos=pos+1;
+        if(musclestr==2)
+        pos=pos+3;
+      }
+      
+
     }
     else{
       pos = dxl.getPresentPosition(DXL_ID);
@@ -91,8 +105,19 @@ void loop() {
     break;
   case 3:
     digitalWrite(debLED, HIGH);
-    if(dxl.getPresentPosition(DXL_ID)-pos > -5){
-    pos=pos-2;
+    if(dxl.getPresentPosition(DXL_ID)-pos > -24){
+      if (DXL_ID==4)
+      pos=pos-2*musclestr-2;
+      if (DXL_ID==3)
+      pos=pos-2*musclestr;
+      if (DXL_ID==2)
+      pos=pos-musclestr;
+      if (DXL_ID==1){
+        if(musclestr==1)
+        pos=pos-1;
+        if(musclestr==2)
+        pos=pos-3;
+      }
     }
     else{
       pos = dxl.getPresentPosition(DXL_ID);
@@ -129,18 +154,34 @@ if(REC_SERIAL.available()>0){
     else if(Str=="in"){
       digitalWrite(debLED, HIGH);
       Opt = 2;
+      musclestr = 1;
+    }
+    else if(Str=="Sin"){
+      digitalWrite(debLED, HIGH);
+      Opt = 2;
+      musclestr = 2;
     }
     else if(Str=="out"){
       digitalWrite(debLED, HIGH);
       Opt = 3;
+      musclestr = 1;
+    }
+    else if(Str=="Sout"){
+      digitalWrite(debLED, HIGH);
+      Opt = 3;
+      musclestr = 2;
     }
     else if(Str=="fingers"){
       digitalWrite(debLED, HIGH);
       Opt = 4;
     }
-    else{
+    else if(Str=="rest"){
       digitalWrite(debLED, LOW);
       Opt = 0;
+      if(DXL_ID!=4){
+      pos = dxl.getPresentPosition(DXL_ID);
+      dxl.setGoalPosition(DXL_ID, pos);
+      }
     }
   }
 
