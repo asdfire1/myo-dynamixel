@@ -10,14 +10,17 @@ from matplotlib import pyplot as plt
 
 averageC = [deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200)]
 
-starter=10 # This has to be like that because its retarded
-#ser.write(b'initx')
+starter=25 # This has to be like that because its retarded
+
+
+
 
 class Listener(myo.DeviceListener):
   def __init__(self):
     print("__init__")
     self.lock = Lock()
     self.emg_data_queue = deque(maxlen=100) #this can be changed to make the strength change slower and be more stable
+
 
   def on_connected(self, event):
     print("Hello, '{}'! Double tap to exit.".format(event.device_name))
@@ -39,14 +42,21 @@ class Listener(myo.DeviceListener):
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
+    
+
 class readingtest(object):
   def __init__(self, listener):
     self.listener = listener
     #print("reading init")
+
   def main(self):
         global starter
         global averageC
         averageCp = np.zeros((8,), dtype=float)
+
+
+  def main(self):
+
         emg_data = self.listener.get_emg_data()
         if (starter==0):
           #this is the code that will run every time except for the 1st time is
@@ -58,6 +68,7 @@ class readingtest(object):
           #emg_data = float(emg_data)
           #print(emg_datal)
           #print(emg_datal[1])
+
           #emg_dataC0=emg_datal[0]
           #emg_dataC1=emg_datal[1]
           #emg_dataC2=emg_datal[2]
@@ -92,10 +103,12 @@ class readingtest(object):
 
           for g in range(8):
             averageC[g].append((averageCp[g]))
+
         else:
           print("Starter was 1") #This has to be like that otherwise its retarded
           starter=starter-1
           return(0) #This is the output of the 1st time
+
 
 class Plot(object):
   
@@ -135,7 +148,7 @@ def ourcrap():
   while(True):
     millis = int(round(time.time() * 1000))
     readingtest(listener).main()
-    delaytime=250+millis-(int(round(time.time() * 1000)))
+    delaytime=50+millis-(int(round(time.time() * 1000)))
     if(delaytime>=0):
       time.sleep(delaytime/1000)
 
@@ -146,8 +159,9 @@ if __name__ == '__main__':
   time.sleep(1)
   Thread(target = myoshit).start()
   Thread(target = ourcrap).start()
-  time.sleep(3)
+  time.sleep(2)
   Thread(target = garbage).start()
+
   #ser.write(b'fx')
   #time.sleep(0.1)
   #readingtest(listener).main() this doesnt work if it is here
