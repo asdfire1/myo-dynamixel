@@ -7,8 +7,8 @@ import numpy as np
 from collections import deque
 from threading import Lock, Thread
 
-channel1=7 #Channel for in
-channel2=2 #Channel for out
+channel1=6 #Channel for in
+channel2=3 #Channel for out
 channel1multiplier=1.5 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
 maximumemg=50 #Level at which speed is max
