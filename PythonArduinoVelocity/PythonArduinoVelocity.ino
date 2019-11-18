@@ -23,14 +23,14 @@ void setup() {
 
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);//Sets dynamixel protocol
 
-  dxl.writeControlTableItem(VELOCITY_I_GAIN, 4, 3000);
-  dxl.writeControlTableItem(VELOCITY_I_GAIN, 5, 3000);
+ 
   for(int i=1; i<=5; i++){ //We have 
     dxl.torqueOff(i);
     dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
     dxl.torqueOn(i);
   }
-
+  dxl.writeControlTableItem(VELOCITY_I_GAIN, 4, 3000);
+  dxl.writeControlTableItem(VELOCITY_I_GAIN, 5, 3000);
   ledindicator.begin(); // Initializes NeoPixel leds
   ledindicator.setBrightness(5); //Sets the brightness (can be changed)
   ledindicator.clear(); //Clears the currently displayed
