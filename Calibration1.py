@@ -1,4 +1,4 @@
-from _future_ import print_function
+from __future__ import print_function
 import myo
 import time
 import os
@@ -15,7 +15,7 @@ starter=25 # This has to be like that because its retarded
 
 class Listener(myo.DeviceListener):
   def __init__(self):
-    print("_init_")
+    print("__init__")
     self.lock = Lock()
     self.emg_data_queue = deque(maxlen=100) #this can be changed to make the strength change slower and be more stable
 
@@ -69,7 +69,9 @@ class readingtest(object):
           #cls()
           #print(emg_datar)
           #print("average value:")
+          cls()
           for g in range(8):
+            
             averageCp[g]=sum(emg_datal[g])/len(emg_datal[g])
             print("C" + str(g) + ": " + str(averageCp[g]))
           
@@ -139,14 +141,14 @@ def ourcrap():
     if(delaytime>=0):
       time.sleep(delaytime/1000)
 
-if _name_ == '_main_':
+if __name__ == '__main__':
   myo.init()
   hub = myo.Hub()
   listener = Listener()
   time.sleep(1)
   Thread(target = myoshit).start()
   Thread(target = ourcrap).start()
-  time.sleep(2)
+  time.sleep(1)
   Thread(target = garbage).start()
   #ser.write(b'fx')
   #time.sleep(0.1)
@@ -178,3 +180,5 @@ if _name_ == '_main_':
     #time.sleep(delaytime/1000)
     #pass
   print('Bye, bye!')
+
+
