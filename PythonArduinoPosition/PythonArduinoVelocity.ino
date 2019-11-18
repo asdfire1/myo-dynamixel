@@ -23,6 +23,8 @@ void setup() {
 
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);//Sets dynamixel protocol
 
+  dxl.writeControlTableItem(VELOCITY_I_GAIN, 4, 3000);
+  dxl.writeControlTableItem(VELOCITY_I_GAIN, 5, 3000);
   for(int i=1; i<=5; i++){ //We have 
     dxl.torqueOff(i);
     dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
