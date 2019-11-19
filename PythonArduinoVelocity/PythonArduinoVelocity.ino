@@ -11,26 +11,29 @@
   uint8_t DXL_ID = 4; //Starting id of a servo
   const float DXL_PROTOCOL_VERSION = 2.0;
 
-  int Opt = 0;
-  int musclestr = 0;
   Adafruit_NeoPixel ledindicator(LEDNUM, LEDPIN, NEO_GRB + NEO_KHZ800); //Creating object for LEDs
   Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN); //Creating object for dynamixel communication
 
 void setup() {
   REC_SERIAL.begin(57600); //Computer serial baudrate, has to be the same as in our python code
-  //REC_SERIAL.println("setup");
   dxl.begin(57600); //Dynamixel baudrate, has to be the same as on the servos
 
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);//Sets dynamixel protocol
 
  
-  for(int i=1; i<=5; i++){ //We have 
+  for(int i=1; i<=3; i++){ //We have 
     dxl.torqueOff(i);
     dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
     dxl.torqueOn(i);
   }
-  dxl.writeControlTableItem(VELOCITY_I_GAIN, 4, 3000);
-  dxl.writeControlTableItem(VELOCITY_I_GAIN, 5, 3000);
+  for(int i=4; i<=5; i++){
+    dxl.torqueOff(i);
+    dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
+    dxl.writeControlTableItem(VELOCITY_I_GAIN, i, 4000);
+    dxl.writeControlTableItem(VELOCITY_P_GAIN, i, 300);
+    dxl.torqueOn(i);
+    } 
+
   ledindicator.begin(); // Initializes NeoPixel leds
   ledindicator.setBrightness(5); //Sets the brightness (can be changed)
   ledindicator.clear(); //Clears the currently displayed
@@ -63,7 +66,6 @@ void loop() {
 
   if(REC_SERIAL.available()>0){
     delay(10);
-    //REC_SERIAL.println("reading...");
     String Str = REC_SERIAL.readStringUntil('x');
   
     if(Str=="f"){
@@ -88,11 +90,7 @@ void loop() {
       indicatorset();
       }
     else{  
-      Opt = 3;
-      musclestr=Str.toInt();
-      //REC_SERIAL.print(Str);
-      //REC_SERIAL.print(musclestr);
-      //REC_SERIAL.println();
+      int musclestr=Str.toInt();
       if(DXL_ID!=4)
       musclestr=musclestr/2;
       dxl.writeControlTableItem(GOAL_VELOCITY, DXL_ID, musclestr);
