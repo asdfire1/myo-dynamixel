@@ -125,5 +125,3 @@ if __name__ == '__main__':
   time.sleep(1)
   Thread(target = myobandthings).start()
   Thread(target = ourthings).start()
-
-
