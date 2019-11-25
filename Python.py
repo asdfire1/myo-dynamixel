@@ -7,13 +7,13 @@ import numpy as np
 from collections import deque
 from threading import Lock, Thread
 
-channel1=6 #Channel for in
+channel1=7 #Channel for in
 channel2=3 #Channel for out
 channel1multiplier=1.5 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
 maximumemg=50 #Level at which speed is max
 
-starter=5 # This has to be like that because its retarded
+starter=25 # This has to be like that because its retarded
 ser = serial.Serial("COM5", 57600)
 posevariable='0'
 
@@ -21,7 +21,7 @@ class Listener(myo.DeviceListener):
   def __init__(self):
     print("__init__")
     self.lock = Lock()
-    self.emg_data_queue = deque(maxlen=80) #this can be changed to make the strength change slower and be more smooth (but also delayed)
+    self.emg_data_queue = deque(maxlen=40) #this can be changed to make the strength change slower and be more smooth (but also delayed)
 
   def on_connected(self, event):
     print("Hello, '{}'! Double tap to exit.".format(event.device_name))
@@ -113,8 +113,8 @@ def ourthings():
      strength=str(strength)+'x'
      print("Strength is: "+ strength)
      ser.write(bytes(strength, 'utf-8'))
-    delaytime=50+millis-(int(round(time.time() * 1000)))
-
+     delaytime=10+millis-(int(round(time.time() * 1000)))
+     #print("Delay is: "+ str(delaytime))
     if(delaytime>=0): #This prevents crashing in case the delaytime would go into negative values
       time.sleep(delaytime/1000) 
 

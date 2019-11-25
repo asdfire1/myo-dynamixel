@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 
 
 averageC = [deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200),deque(maxlen=200)]
-
+MaxCp = np.zeros((8,), dtype=float)
 starter=25 # This has to be like that because its retarded
 
 class Listener(myo.DeviceListener):
@@ -41,7 +41,8 @@ class emgprocessing(object):
     self.listener = listener
   def main(self):
         global starter
-        global averageC
+        global averageC #Deque
+        global MaxCp
         averageCp = np.zeros((8,), dtype=float)
         emg_data = self.listener.get_emg_data()
         if (starter==0):
@@ -53,7 +54,10 @@ class emgprocessing(object):
           for g in range(8):
             
             averageCp[g]=sum(emg_datal[g])/len(emg_datal[g])
+            if averageCp[g] > MaxCp[g]:
+              MaxCp[g]=averageCp[g]
             print("C" + str(g) + ": " + str(averageCp[g]))
+            print("Maximum: "+ str(MaxCp[g]))
           
 
           for g in range(8):
