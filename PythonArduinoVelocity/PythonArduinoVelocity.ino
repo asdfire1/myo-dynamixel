@@ -65,7 +65,7 @@ void indicatorset(){
 void loop() {
 
   if(REC_SERIAL.available()>0){
-    delay(5);
+    //delay(1);
     String Str = REC_SERIAL.readStringUntil('x');
   
     if(Str=="f"){

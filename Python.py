@@ -7,13 +7,13 @@ import numpy as np
 from collections import deque
 from threading import Lock, Thread
 
-channel1=7 #Channel for in
+channel1=6 #Channel for in
 channel2=3 #Channel for out
 channel1multiplier=1.5 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
-maximumemg=50 #Level at which speed is max
+maximumemg=40 #Level at which speed is max
 
-starter=25 # This has to be like that because its retarded
+starter=50 # This has to be like that because its retarded
 ser = serial.Serial("COM5", 57600)
 posevariable='0'
 
@@ -113,7 +113,7 @@ def ourthings():
      strength=str(strength)+'x'
      print("Strength is: "+ strength)
      ser.write(bytes(strength, 'utf-8'))
-     delaytime=10+millis-(int(round(time.time() * 1000)))
+     delaytime=5+millis-(int(round(time.time() * 1000)))
      #print("Delay is: "+ str(delaytime))
     if(delaytime>=0): #This prevents crashing in case the delaytime would go into negative values
       time.sleep(delaytime/1000) 
