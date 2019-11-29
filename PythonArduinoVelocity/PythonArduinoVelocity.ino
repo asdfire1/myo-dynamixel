@@ -15,8 +15,8 @@
   Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN); //Creating object for dynamixel communication
 
 void setup() {
-  REC_SERIAL.begin(57600); //Computer serial baudrate, has to be the same as in our python code
-  dxl.begin(57600); //Dynamixel baudrate, has to be the same as on the servos
+  REC_SERIAL.begin(115200); //Computer serial baudrate, has to be the same as in our python code
+  dxl.begin(115200); //Dynamixel baudrate, has to be the same as on the servos
 
   dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);//Sets dynamixel protocol
 
@@ -63,10 +63,9 @@ void indicatorset(){
 }
 
 void loop() {
-
   if(REC_SERIAL.available()>0){
-    //delay(1);
     String Str = REC_SERIAL.readStringUntil('x');
+  
   
     if(Str=="f"){
       dxl.writeControlTableItem(GOAL_VELOCITY, DXL_ID, 0);
@@ -95,6 +94,7 @@ void loop() {
       musclestr=musclestr/2;
       dxl.writeControlTableItem(GOAL_VELOCITY, DXL_ID, musclestr);
     }
+    
   }
 
 }

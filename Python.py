@@ -11,10 +11,10 @@ channel1=6 #Channel for in
 channel2=3 #Channel for out
 channel1multiplier=1.5 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
-maximumemg=40 #Level at which speed is max
+maximumemg=50 #Level at which speed is max
 
 starter=50 # This has to be like that because its retarded
-ser = serial.Serial("COM5", 57600)
+ser = serial.Serial("COM5", 115200)
 posevariable='0'
 
 class Listener(myo.DeviceListener):
@@ -99,10 +99,11 @@ def myobandthings():
 
 def ourthings():
   global posevariable
-
+  period=0.005
+  t=time.time()
   while(True):
-    millis = int(round(time.time() * 1000))
-    #print (millis) # This can be used to verify the timing
+    t+=period
+    #print (time.time()*1000) # This can be used to verify the timing
     if (posevariable !='0'):
      print(posevariable)
      ser.write(bytes(posevariable, 'utf-8'))
@@ -113,10 +114,7 @@ def ourthings():
      strength=str(strength)+'x'
      print("Strength is: "+ strength)
      ser.write(bytes(strength, 'utf-8'))
-     delaytime=5+millis-(int(round(time.time() * 1000)))
-     #print("Delay is: "+ str(delaytime))
-    if(delaytime>=0): #This prevents crashing in case the delaytime would go into negative values
-      time.sleep(delaytime/1000) 
+    time.sleep(max(0,t-time.time()))
 
 if __name__ == '__main__':
   myo.init()
