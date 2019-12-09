@@ -9,7 +9,7 @@ from threading import Lock, Thread
 
 channel1=6 #Channel for in
 channel2=3 #Channel for out
-channel1multiplier=1.5 #strength multiplier for 1st channel
+channel1multiplier=0.9 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
 maximumemg=50 #Level at which speed is max
 
