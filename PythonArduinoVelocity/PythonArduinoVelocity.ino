@@ -24,13 +24,14 @@ void setup() {
   for(int i=1; i<=3; i++){ //We have 
     dxl.torqueOff(i);
     dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
+    dxl.writeControlTableItem(VELOCITY_P_GAIN, i, 700);
     dxl.torqueOn(i);
   }
   for(int i=4; i<=5; i++){
     dxl.torqueOff(i);
     dxl.setOperatingMode(i, OP_VELOCITY); //Sets operating mode of dynamixels
     dxl.writeControlTableItem(VELOCITY_I_GAIN, i, 4000);
-    dxl.writeControlTableItem(VELOCITY_P_GAIN, i, 300);
+    dxl.writeControlTableItem(VELOCITY_P_GAIN, i, 600);
     dxl.torqueOn(i);
     } 
 
