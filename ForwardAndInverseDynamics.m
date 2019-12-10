@@ -28,8 +28,8 @@ syms Grav real %symbolic value for gravity
 
 
 %unit vectors in coordinate frames
-xu = [1; 0;0];
-zu = [0;0;1]; 
+xu = [ 1; 0; 0];
+zu = [ 0; 0; 1]; 
 
 g = Grav*zu
 
@@ -49,6 +49,7 @@ I1 = [I1xx I1xy I1xz;
 I2xx =  0.00068428;  I2xy = -0.00000062;  I2xz = -0.0003437 ;
 I2yx = -0.00000062;  I2yy =  0.00070708;  I2yz =  0.0000108 ;
 I2zx = -0.00003437;  I2zy =  0.0000108 ;  I2zz =  0.00005684;
+
 I2 = [I2xx I2xy I2xz;
       I2yx I2yy I2yz;
       I2zx I2zy I2zz];
@@ -261,9 +262,9 @@ tau = vpa(tau,3)
 %% Testing
 
 %angularpositions 
-pos1=0; pos2=-1; pos3=0.3;
+pos1=-1; pos2=0; pos3=0.3;
 %angularvelocities 
-vel1=2; vel2=5; vel3=1;
+vel1=2; vel2=3; vel3=4;
 %angularacceleration 
 acc1=1; acc2=2; acc3=2;
 %gConst=[0;0;9.81];
