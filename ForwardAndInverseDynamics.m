@@ -106,8 +106,8 @@ S3  = vpa(S3,3);
 Sc3 = R3*Lc3;
 Sc3 = vpa(Sc3,3);
 
-H1  = S1;       %From base to frame 1
-Hc1 = Sc1;
+H1  = S1-Sc1;       %From base to frame 1
+Hc1 = 0;
 H2  = H1+S2;    %From base to frame 2
 Hc2 = H1+Sc2;
 H3  = H2+S3;    %From base to frame 3
