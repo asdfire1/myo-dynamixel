@@ -7,14 +7,14 @@ import numpy as np
 from collections import deque
 from threading import Lock, Thread
 
-channel1=5 #Channel for in
-channel2=1 #Channel for out
-channel1multiplier=1.2 #strength multiplier for 1st channel
+channel1=6 #Channel for in
+channel2=3 #Channel for out
+channel1multiplier=1 #strength multiplier for 1st channel
 minimumemg=4 #Threshold for action
 maximumemg=50 #Level at which speed is max
 
 starter=50 # This has to be like that because its retarded
-ser = serial.Serial("COM5", 115200)
+ser = serial.Serial("COM10", 115200)
 posevariable='0'
 
 class Listener(myo.DeviceListener):
